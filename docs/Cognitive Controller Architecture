@@ -1,0 +1,98 @@
+Cognitive Controller: Technical Blueprint
+
+1. The Gateway Tap (Stream Interception)
+
+To prevent OpenClaw from waking up as a "zombie," the Controller acts as a side-car to the Gateway. It performs a fan-out of every message:
+
+Primary Loop: Standard OpenClaw execution.
+
+Secondary Stream: Non-blocking capture into the Event Store (SQLite). This captures the "Raw Truth" before any Markdown sprawl occurs.
+
+2. Memory Tiering & Compression Model
+
+Instead of one big file, we use a Decay & Promote strategy:
+
+Tier
+
+Storage
+
+Strategy
+
+Retention
+
+Instant (Hot)
+
+SQLite (In-Mem)
+
+High Fidelity: Every tool call and heartbeat.
+
+1 Session
+
+Episodic (Warm)
+
+SQLite (Disk)
+
+Summary-Only: Grouped events (e.g., "The 3pm Debugging Session").
+
+30 Days
+
+Semantic (Cold)
+
+Obsidian (MD)
+
+Canonical Knowledge: Only verified facts and patterns.
+
+Forever
+
+3. Categorization & Routing
+
+Every event is tagged at the Gateway level:
+
+Personal: (e.g., ~/obsidian/personal/)
+
+Professional: (e.g., ~/obsidian/pro/)
+
+Reranker Logic: When the agent wakes up for a 'Professional' task, the 'Personal' tier is physically excluded from the context window. This kills "Cognitive Drift" instantly.
+
+4. SQLite Schema: The "Brain State"
+
+-- Event Log: The "Black Box" recorder
+CREATE TABLE event_log (
+    id TEXT PRIMARY KEY,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    category TEXT, -- 'Personal' | 'Professional'
+    thread_id TEXT,
+    payload JSON,
+    importance_score REAL -- Used to decide what survives the Roll-up
+);
+
+-- Snapshots: The "Hard Resume" (Prevents Hallucination)
+CREATE TABLE snapshots (
+    thread_id TEXT PRIMARY KEY,
+    resume_block TEXT, -- Compressed summary
+    hard_constraints TEXT, -- VERBATIM rules that must NEVER be summarized
+    active_goal TEXT
+);
+
+
+5. The Consolidation Loop (The "Sleep" Cycle)
+
+To solve the "Big MD" problem, the system must perform "Synaptic Pruning":
+
+Extraction: Once a day, the LLM reads the event_log and extracts "Learnings."
+
+Promotion: If a Learning is high-importance (e.g., "Always use port 8080 for this API"), it is written to Obsidian.
+
+Pruning: The event_log entries are deleted.
+
+The Result: Your Markdown files stay small because they only contain Knowledge, not Activity Logs.
+
+6. Wake-up Protocol (Anti-Zombie)
+
+Load Snapshot: Get the hard_constraints and active_goal.
+
+Semantic Recall: Use QMD to pull the 3 most relevant "Canonical Truths" from the Obsidian Vault.
+
+Inject: Prepend to prompt.
+
+Result: The agent wakes up with the wisdom of 3 months of work, but only 1,000 tokens of context.

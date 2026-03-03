@@ -1,0 +1,118 @@
+{
+  "handshake": {
+    "schema_version": "1.0",
+    "snapshot_id": "uuid",
+    "created_at": "2026-02-28T00:00:00Z",
+    "expires_at": "2026-02-28T02:00:00Z",
+    "source_event_ids": ["evt_100", "evt_150", "evt_200"],
+    "trigger": "memory_flush|scheduled|manual|file_change"
+  },
+
+  "objective_now": "string",
+
+  "active_threads": [
+    {
+      "thread_id": "string",
+      "title": "string",
+      "next_step": "string",
+      "status": "active|stalled|done",
+      "confidence": 0.0,
+      "confidence_last_updated": "2026-02-28T00:00:00Z",
+      "last_event_at": "2026-02-28T00:00:00Z",
+      "evidence_ids": ["evt_123", "evt_456"],
+      "blocked_by": ["external_dependency|missing_credential|user_input|rate_limit|unknown"]
+    }
+  ],
+
+  "hard_constraints": [
+    {
+      "constraint_id": "const_001",
+      "text": "VERBATIM STRING - never summarize",
+      "source": { "type": "user|system|tool", "id": "evt_001" },
+      "added_at": "2026-02-28T00:00:00Z",
+      "immutable": true
+    }
+  ],
+
+  "recent_facts": [
+    {
+      "fact_id": "fct_001",
+      "text": "Atomic fact sentence.",
+      "type": "event|decision|state|result|warning",
+      "confidence": 1.0,
+      "source": { "type": "tool|user|system|db|inference", "id": "evt_123" },
+      "ts": "2026-02-28T00:00:00Z",
+      "tags": ["personal", "professional", "system", "auth", "memory"]
+    }
+  ],
+
+  "decisions": [
+    {
+      "decision_id": "dec_001",
+      "what": "Short description of what was decided.",
+      "why": "Rationale, constraints, tradeoffs.",
+      "how": "Implementation approach / specific technical steps.",
+      "when": "v1, after telemetry, cron marker, or date — when this applies.",
+      "who": "system|user|operator — who made/owns this.",
+      "inactive": false,
+      "revisit_if": [
+        "Condition 1 for re-evaluation — metric > threshold",
+        "Condition 2 — observable event",
+        "Condition 3 — time-based trigger"
+      ],
+      "source": { "type": "user|system|tool", "id": "evt_222" },
+      "ts": "2026-02-28T00:00:00Z"
+    }
+  ],
+
+  "open_questions": [
+    {
+      "question_id": "q_001",
+      "text": "What's missing / needs user input?",
+      "priority": "high|medium|low",
+      "critical": false,
+      "blocker": false,
+      "source": { "type": "user|system|tool", "id": "evt_123" },
+      "ts": "2026-02-28T00:00:00Z"
+    }
+  ],
+
+  "tool_state": {
+    "available": ["tool_a", "tool_b"],
+    "unavailable": [],
+    "health": "healthy|degraded|unknown",
+    "last_check_at": "2026-02-28T00:00:00Z",
+    "gateway_healthy": true,
+    "last_heartbeat_at": "2026-02-28T00:00:00Z",
+    "known_tools": ["tool_a", "tool_b"],
+    "notes": "short optional"
+  },
+
+  "last_actions": [
+    {
+      "action_id": "act_001",
+      "text": "What just happened (1 line).",
+      "outcome": "success|failure|partial|unknown",
+      "source": { "type": "tool|system|user", "id": "evt_999" },
+      "ts": "2026-02-28T00:00:00Z"
+    }
+  ],
+
+  "routing": {
+    "policy": "safe",
+    "suggested_model": "small|medium|large",
+    "escalation_reason": "string"
+  },
+
+  "meta": {
+    "agent_id": "agent-123",
+    "model": "gpt-4|claude-3-opus|etc",
+    "domain_hint": "personal|professional|system",
+    "token_budget": 500,
+    "token_count_actual": 487,
+    "token_estimation_model": "cl100k_base|etc",
+    "event_range": { "from": "evt_100", "to": "evt_200" }
+  },
+
+  "extensions": {}
+}
